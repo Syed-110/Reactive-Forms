@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <h1>User Registration</h1>
+  {{registrationForm.value | json}}
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Username</label>
+      <input [class.is-invalid]="userName?.invalid && userName?.touched" formControlName="userName" type="text" class="form-control">
+      <!-- <small [class.d-none]="userName?.valid || userName?.untouched" class="text-danger">Username is required</small> -->
+      <div *ngIf="userName?.invalid && userName?.touched">
+        <small *ngIf="userName?.errors?.['required']" class="text-danger">Username is required</small>
+        <small *ngIf="userName?.errors?.['minlength']" class="text-danger">Username must contains atleast 3 character</small>
+        <small *ngIf="userName?.errors?.['userNameForbidden']" class="text-danger">{{userName?.errors?.['userNameForbidden']?.value}} username is not allowed</small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="button" class="btn btn-primary btn-sm m-3" (click)="addAlternateEmail()" value="Add email">
+      <input [class.is-invalid]="userEmail?.invalid && userEmail?.touched" formControlName="email" type="email" class="form-control">
+      <!-- <small [class.d-none]="userEmail?.valid || userEmail?.untouched" class="text-danger">Email is required</small> -->
+      <div *ngIf="userEmail?.invalid || userEmail?.touched">
+        <small *ngIf="userEmail?.errors?.['required']" class="text-danger">Email is required</small>
+        <small *ngIf="userEmail?.errors?.['email']" class="text-danger">Email is not valid</small>
+      </div>
+      <div formArrayName="alternateEmails" *ngFor="let email of userAlternateEmails.controls; let i=index">
+        <input type="email" class="form-control my-1" placeholder="Alternate Emails" [formControlName]="i">
+      </div>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" formControlName="subscribe" type="checkbox">
+      <label>Send me promotional offers</label>
+    </div>
+    <div formGroupName="address">
+      <div class="form-group">
+        <label>State</label>
+        <input formControlName="state" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <input formControlName="city" type="text" class="form-control">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input formControlName="password" type="password" class="form-control">
+    </div>
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input formControlName="cnfPassword" type="password" class="form-control">
+      <div *ngIf="registrationForm?.errors?.['misMatch']">
+        <small *ngIf="registrationForm?.errors?.['misMatch']" class="text-danger">Passwords don't match</small>
+      </div>
+    </div><br>
+    <button [disabled]="!registrationForm.valid" type="submit" class="btn btn-success">Submit</button>
+    <button (click)="loadData()" type="button" class="btn btn-primary ms-2 me-2">Load Data Using setValue</button>
+    <button (click)="loadPatchData()" type="button" class="btn btn-secondary ms-2">Load Data Using patchValue</button>
+  </form>
+</div>
+<router-outlet></router-outlet>
